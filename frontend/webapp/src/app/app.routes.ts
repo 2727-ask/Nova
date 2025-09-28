@@ -17,4 +17,8 @@ export const routes: Routes = [
     path: 'optimizing',
     loadComponent: () => import('./pages/optimizing/optimizing').then((m) => m.Optimizing),
   },
+  {
+    path: 'final',
+    loadComponent: () => import('./pages/final/final').then((m) => m.Final),
+  }
 ];

@@ -45,7 +45,7 @@ export class Optimizing implements OnInit {
         setTimeout(next, this.randomDelayMs());
       } else {
         // final pause then redirect to optimized page
-        setTimeout(() => this.router.navigate(['/optimizing']), 700);
+        setTimeout(() => this.router.navigate(['/final']), 700);
       }
     };
 
