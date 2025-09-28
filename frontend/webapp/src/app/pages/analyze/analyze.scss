@@ -1,0 +1,49 @@
+// ...existing code...
+.analyze-root {
+  padding: 16px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+.meta {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.charts-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+
+  .chart-card {
+    flex: 1 1 320px;
+    background: #fff;
+    border-radius: 6px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  canvas {
+    max-width: 100%;
+    height: 240px;
+  }
+}
+
+.tables {
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 16px;
+
+    th, td {
+      border: 1px solid #e6e6e6;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    thead {
+      background: #f7f7f7;
+    }
+  }
+}

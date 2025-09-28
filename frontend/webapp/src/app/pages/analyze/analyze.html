@@ -1,1 +1,101 @@
-<p>analyze works!</p>
+<div class="analyze-root">
+  <h2>Analysis Summary</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <div class="meta">
+      <div>
+        Transactions: <strong>{{ response.transactions_count }}</strong>
+      </div>
+      <div>
+        Uncategorized amount: <strong>${{ response.uncategorized }}</strong>
+      </div>
+    </div>
+    <div class="meta">
+            <button class="btn btn-primary">Reduce My CO2 Footprint</button>
+    </div>
+  </div>
+
+  <section class="charts-row">
+    <div class="chart-card">
+      <h3>Category - Amount</h3>
+      <canvas #categoryAmountChart></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3>Category - Emissions</h3>
+      <canvas #categoryEmissionChart></canvas>
+    </div>
+
+    <div class="chart-card">
+      <h3>Top Subcategories - Amount</h3>
+      <canvas #subcategoryAmountChart></canvas>
+    </div>
+  </section>
+
+  <section class="tables">
+    <h3>Category Totals</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Amount</th>
+          <th
+            style="text-align: center; display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              width="30"
+              height="30"
+              src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2.png"
+              alt="external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2"
+            />
+            Emission
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of categories">
+          <td>{{ c.name }}</td>
+          <td>${{ c.amount | number : '1.2-2' }}</td>
+          <td
+            style="text-align: center; display: flex; justify-content: center; align-items: center"
+          >
+            {{ c.emission }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Subcategories (top by amount)</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Subcategory</th>
+          <th>Amount</th>
+          <th
+            style="text-align: center; display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              width="30"
+              height="30"
+              src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2.png"
+              alt="external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2"
+            />
+            Emission
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of subcategories">
+          <td>{{ s.category }}</td>
+          <td>{{ s.name }}</td>
+          <td>${{ s.amount | number : '1.2-2' }}</td>
+          <td
+            style="text-align: center; display: flex; justify-content: center; align-items: center"
+          >
+            <span></span> <span>{{ s.emission }}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
