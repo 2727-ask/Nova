@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { setAnalyzeResponse } from '../../state/analyze-signal';
 
 @Component({
   selector: 'app-getstarted',
@@ -20,9 +21,11 @@ export class Getstarted {
       formData.append('file', file);
 
       // Hit the FastAPI endpoint
-      this.http.post('http://localhost:8000/statements/categorize', formData).subscribe({
+      this.http.post('http://localhost:8000/user/analyze', formData).subscribe({
         next: (response) => {
           console.log('File uploaded successfully:', response);
+          // store response in the shared signal so other pages/components can read it
+          setAnalyzeResponse(response);
           // Redirect to the analyze route
           this.router.navigate(['/analyze']);
         },

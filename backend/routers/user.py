@@ -52,7 +52,7 @@ def _get_budget_allocation_dollars() -> dict:
     If you later make /user/profile dynamic, import from a service
     instead of hardcoding this.
     """
-    monthly_income = 5000
+    monthly_income = 2000
     percentages = {
         "Travel": 10,
         "Food": 15,
