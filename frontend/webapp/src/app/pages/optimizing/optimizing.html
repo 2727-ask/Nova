@@ -1,0 +1,22 @@
+<div class="root-main mt-2">
+<div class="processing-root mt-2">
+  <h3 class="text-heading">Processing your report</h3>
+
+  <div class="log-list">
+    <div class="log" *ngFor="let l of visibleLogs; let i = index" [class.active]="i === currentIndex">
+      <span class="dot" [class.pulse]="i === currentIndex"></span>
+      <span class="msg">{{ l }}</span>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-bar" [style.width.%]="progress"></div>
+    </div>
+    <div class="progress-label">{{ progress }}%</div>
+  </div>
+
+  <div class="hint">Please wait — you will be redirected automatically.</div>
+</div>
+</div>
+

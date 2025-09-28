@@ -1,0 +1,95 @@
+<div class="final-root">
+  <div class="hero">
+    <div class="left">
+      <h2>Recommended improvements</h2>
+      <div class="badge" [class.ok]="compliant" [class.warn]="!compliant">
+        <strong>{{ compliant ? 'Compliant' : 'Not compliant' }}</strong>
+        <div class="sub">Allotted vs actual</div>
+      </div>
+      <div class="summary">
+        <div>Total allotted: <strong>{{ totals.allotted | number:'1.0-2' }} kg</strong></div>
+        <div>Total actual: <strong>{{ totals.actual | number:'1.0-2' }} kg</strong></div>
+        <div>Projected after changes: <strong>{{ totals.afterActual | number:'1.0-2' }} kg</strong></div>
+      </div>
+
+      <div class="quick-metrics">
+        <div>Overall projected reduction: <strong>{{ overallReductionPct | number:'1.0-0' }}%</strong></div>
+        <div *ngIf="!compliant">
+          Offset required after actions: <strong>{{ offsetKg | number:'1.2-2' }} kg</strong>
+        </div>
+      </div>
+
+      <div *ngIf="!compliant" class="offset-card chart-card">
+        <h4 style="margin-top:0">Compensation & Offsetting suggestions</h4>
+        <p>Your projected emissions are still above the allotted budget. You can compensate by buying verified carbon credits or supporting tree-planting programs.</p>
+
+        <ul>
+          <li>Estimated offset required: <strong>{{ offsetKg | number:'1.2-2' }} kg</strong></li>
+          <li>Approx. carbon credits cost: <strong>\${{ estimatedCreditCostUsd | number:'1.2-2' }}</strong> (estimate at ~$10 / tonne)</li>
+          <li>Approx. number of trees to plant: <strong>{{ estimatedTrees }}</strong> (varies by species & location)</li>
+        </ul>
+
+        <div class="comp-actions">
+          <a href="https://www.goldstandard.org/" target="_blank" rel="noopener" class="btn-primary">Buy Verified Credits</a>
+          <a href="https://onetreeplanted.org/" target="_blank" rel="noopener" class="btn-primary" style="margin-left:8px">Plant Trees</a>
+        </div>
+
+        <h5 style="margin-top:12px">Compensation plan (simple)</h5>
+        <ol>
+          <li>Apply suggested reductions above to cut the largest category emissions first.</li>
+          <li>Purchase offsets to cover remaining gap (one-off or recurring).</li>
+          <li>Plant trees or support habitat restoration projects for long-term sequestration.</li>
+          <li>Track next-month and re-evaluate — aim to be compliant within 3 months.</li>
+        </ol>
+      </div>
+
+      <div class="charts">
+        <div class="chart-card">
+          <h4>Before vs After (by category)</h4>
+          <canvas #beforeAfterChart></canvas>
+        </div>
+
+        <div class="chart-row">
+          <div class="chart-card small">
+            <h4>Totals</h4>
+            <canvas #totalsChart></canvas>
+          </div>
+          <div class="chart-card small">
+            <h4>Reduction per category</h4>
+            <canvas #categoryDeltaChart></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <h3>Actionable tips (by category)</h3>
+      <div class="cards">
+        <div class="cat-card" *ngFor="let c of categories">
+          <div class="cat-header">
+            <div class="cat-name">{{ c.name }}</div>
+            <div class="impact">{{ c.emission | number:'1.0-2' }} kg → <strong>{{ c.afterEmission | number:'1.0-2' }} kg</strong></div>
+          </div>
+          <div class="pct">Reduce by {{ (c.suggestionPct * 100) | number:'1.0-0' }}%</div>
+          <ul>
+            <li *ngFor="let t of c.tips">{{ t }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="final-cta">
+        <button class="btn-primary" routerLink="/optimizing">Apply suggestions & simulate</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="more">
+    <h4>Quick wins</h4>
+    <ul>
+      <li>Switch to paperless billing and consolidate accounts (reduces finance emissions)</li>
+      <li>Plan groceries & prefer plant-forward meals (food)</li>
+      <li>Reduce e-commerce frequency and combine deliveries (shopping)</li>
+      <li>Use ride-sharing smartly, bike or public transit when possible (travel)</li>
+    </ul>
+  </section>
+</div>

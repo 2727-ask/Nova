@@ -2,11 +2,12 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, AfterViewInit, ViewChild, ElementRef, effect } from '@angular/core';
 import Chart from 'chart.js/auto';
 import { analyzeResponse } from '../../state/analyze-signal';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-analyze',
   standalone: true,
-  imports: [CommonModule, DecimalPipe],
+  imports: [CommonModule, DecimalPipe, RouterModule],
   templateUrl: './analyze.html',
   styleUrls: ['./analyze.scss']
 })
