@@ -97,3 +97,26 @@ def get_emission_factor(category: str, subcategory: str, mode: str = "mid") -> f
     if mode == "max":
         return hi
     return (lo + hi) / 2.0
+
+
+# services/emission_factors.py
+from typing import Dict, Tuple
+# keep your existing EMISSION_FACTORS and factor_for(...)
+
+def category_factor(category: str, mode: str = "mid") -> float:
+    """
+    Average the subcategory factors for a given category.
+    Used to convert category-level dollar budgets into emissions budgets (kg/USD).
+    """
+    vals = []
+    for (cat, sub) in EMISSION_FACTORS.keys():
+        if cat != category:
+            continue
+        # Electricity is handled elsewhere; skip here
+        if cat == "Housing" and sub.lower().startswith("electricity"):
+            continue
+        vals.append(factor_for(cat, sub, mode=mode))
+    if not vals:
+        # sensible fallback if category has no sub-factors listed
+        return (0.05 + 0.20) / 2.0  # 0.125 kg/USD mid
+    return sum(vals) / len(vals)
