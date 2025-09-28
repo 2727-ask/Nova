@@ -21,7 +21,7 @@ export class Getstarted {
       formData.append('file', file);
 
       // Hit the FastAPI endpoint
-      this.http.post('http://localhost:8000/user/analyze', formData).subscribe({
+      this.http.post('http://webwork2.asu.edu:9092/user/analyze', formData).subscribe({
         next: (response) => {
           console.log('File uploaded successfully:', response);
           // store response in the shared signal so other pages/components can read it
