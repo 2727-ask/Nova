@@ -1,10 +1,30 @@
 .text {
     position: absolute;
     z-index: 9;
-    top: calc(50% - 140px) !important;
+    top: calc(50% - 100px) !important;
     left: 50%;
     text-align: center;
     text-transform: uppercase;
     color: white;
     pointer-events: auto;
+}
+
+.btn {
+    margin-top: 20px;
+    background-color: #0f5c21;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #275e2a;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #033709;
 }
