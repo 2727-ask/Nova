@@ -1,0 +1,14 @@
+<div class="main">
+  <span style="color: rgb(65, 176, 65)">
+    <span style="font-size: 4em;">Getting Started</span><br>
+    <span style="font-size: 1em"><i>Please upload your bank statement here</i></span>
+  </span>
+</div>
+<div class="main-div">
+  <label for="file-upload" class="file-upload-label">
+    <div class="request-loader" style="background-color: white;">
+      <span style="font-size: 1em;">🌳</span>
+    </div>
+    <input id="file-upload" type="file" style="display: none;" (change)="onFileSelected($event)" />
+  </label>
+</div>
