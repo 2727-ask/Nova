@@ -1,0 +1,10 @@
+.text {
+    position: absolute;
+    z-index: 9;
+    top: calc(50% - 140px) !important;
+    left: 50%;
+    text-align: center;
+    text-transform: uppercase;
+    color: white;
+    pointer-events: auto;
+}
