@@ -2,7 +2,7 @@ annotated-types==0.7.0
 anyio==4.11.0
 cffi==2.0.0
 charset-normalizer==3.4.3
-click==8.3.0
+click==8.1.0
 cryptography==46.0.1
 fastapi==0.117.1
 h11==0.16.0
