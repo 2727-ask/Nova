@@ -109,7 +109,7 @@ def _clean_spaces(s: str) -> str:
     # collapse internal whitespace
     return " ".join(s.split())
 
-def extract_chase_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
+def extract_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
     """
     Extract Chase transactions as a list of dicts:
       {date: MM/DD, description: str, amount: float, balance: float}

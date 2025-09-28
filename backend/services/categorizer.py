@@ -65,7 +65,7 @@ RULES: List[Tuple[re.Pattern, str, str]] = [
     (re.compile(r"\b(church|temple|masjid)\b", re.I), "Charity", "Religious donations"),
 ]
 
-def categorize(description: str) -> Tuple[str, str]:
+def categorize_transactions(description: str) -> Tuple[str, str]:
     desc = description.lower()
     for pattern, cat, sub in RULES:
         if pattern.search(desc):
@@ -85,7 +85,7 @@ def summarize_transactions(transactions: List[Transaction]):
         if amt >= 0:
             continue  # ignore deposits/income for spend summary
 
-        cat, sub = categorize(t.description)
+        cat, sub = categorize_transactions(t.description)
         if cat == "Uncategorized":
             uncategorized_total += abs(amt)
             continue

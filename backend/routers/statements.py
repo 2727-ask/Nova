@@ -1,15 +1,19 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Query
 from fastapi.responses import StreamingResponse
 from models.schemas import SummaryResponse
-from services.pdf_parser import parse_pdf, extract_chase_transactions
-from services.categorizer import summarize_transactions, categorize
-import csv
+from services.pdf_parser import parse_pdf, extract_transactions
+from services.categorizer import summarize_transactions, categorize_transactions
 from io import StringIO, BytesIO
+from sqlalchemy.orm import Session
+from db.database import SessionLocal
+from services.repository import bulk_insert_transactions
+
+import csv
 
 router = APIRouter()
 
-@router.post("/classify", response_model=SummaryResponse, summary="Upload a Chase PDF to categorize spend")
-async def classify(file: UploadFile = File(...)):
+@router.post("/categorize", response_model=SummaryResponse, summary="Upload a Chase PDF to categorize spend")
+async def categorize(file: UploadFile = File(...)):
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Please upload a .pdf file")
 
@@ -26,33 +30,43 @@ async def classify(file: UploadFile = File(...)):
         transactions_count=len(transactions)
     )
     
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @router.post("/save")
-async def save(file: UploadFile = File(...)):
+async def save(
+    file: UploadFile = File(...),
+    persist: bool = Query(True, description="Persist into SQLite (default: true)"),
+    db: Session = Depends(get_db),
+):
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Please upload a PDF")
 
     contents = await file.read()
-    # Parse transactions (date, description, amount, balance)
-    txns = extract_chase_transactions(contents)
+    txns = extract_transactions(contents)
 
-    # Build rows with categorization
-    rows = []
+    rows_db = []
     for t in txns:
-        cat, subcat = categorize(t["description"])
-        rows.append([
-            t["date"], t["description"], t["amount"], cat, subcat
-        ])
+        cat, subcat = categorize_transactions(t["description"])
+        rows_db.append({
+            "date": t["date"],
+            "description": t["description"],
+            "amount": t["amount"],
+            "balance": t.get("balance"),
+            "category": cat,
+            "subcategory": subcat,
+            "source": "chase_pdf",
+        })
 
-    # CSV to memory (text → bytes)
-    text_buf = StringIO(newline="")
-    writer = csv.writer(text_buf)
-    writer.writerow(["Date", "Description", "Amount", "Category", "Subcategory"])
-    writer.writerows(rows)
-    data = text_buf.getvalue().encode("utf-8")
+    inserted = 0
+    if persist:
+        inserted = bulk_insert_transactions(db, rows_db)
 
-    return StreamingResponse(
-        BytesIO(data),
-        media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": 'attachment; filename="transactions.csv"'}
-    )
+    return {
+        "message": "Data saved successfully",
+        "inserted_rows": inserted
+    }
