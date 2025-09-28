@@ -13,4 +13,8 @@ export const routes: Routes = [
     path: 'analyze',
     loadComponent: () => import('./pages/analyze/analyze').then((m) => m.Analyze),
   },
+  {
+    path: 'optimizing',
+    loadComponent: () => import('./pages/optimizing/optimizing').then((m) => m.Optimizing),
+  },
 ];
