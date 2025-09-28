@@ -1,87 +1,93 @@
 <div class="analyze-root">
-  <h2>Analysis Summary</h2>
-  <div style="display: flex; justify-content: space-between; align-items: center">
+<div class="text-white" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
+    <div class="title"> <h2>Analysis Summary</h2></div>
+    <div class="back" ><button class="btn btn-primary">Reduce CO2 footprint&nbsp;&nbsp;<i class="fa-solid fa-check-circle"></i></button></div>
+</div>
+ 
+
+  <div class="text-white" style="display:flex;gap:12px;align-items:center;justify-content:space-between">
     <div class="meta">
-      <div>
-        Transactions: <strong>{{ response.transactions_count }}</strong>
-      </div>
-      <div>
-        Uncategorized amount: <strong>${{ response.uncategorized }}</strong>
-      </div>
+      <div>Transactions: <strong>{{ response?.transactions_count }}</strong></div>
+      <div>Uncategorized: <strong>${{ response?.uncategorized }}</strong></div>
+      <div>Statement ID: <small>{{ response?.statement_id }}</small></div>
     </div>
-    <div class="meta">
-            <button class="btn btn-primary">Reduce My CO2 Footprint</button>
+    <div style="display:flex;gap:12px;align-items:center">
+      <div style="background:#121212;padding:8px;border-radius:6px">
+        <div class="text-heading" style="font-size:12px">Total Allotted (kg)</div>
+        <div style="font-weight:600">{{ response?.totals?.total_allotted_emission }}</div>
+      </div>
+      <div style="background:#121212;padding:8px;border-radius:6px">
+        <div class="text-heading" style="font-size:12px">Total Actual (kg)</div>
+        <div style="font-weight:600">{{ response?.totals?.total_actual_emission }}</div>
+      </div>
+      <div style="background:#121212;padding:8px;border-radius:6px">
+        <div class="text-heading" style="font-size:12px">Delta (kg)</div>
+        <div style="font-weight:600">{{ response?.totals?.delta_kg }}</div>
+      </div>
     </div>
   </div>
 
+  <br>
+
   <section class="charts-row">
-    <div class="chart-card">
-      <h3>Category - Amount</h3>
+    <div class="chart-card card">
+      <h3 class="text-heading">Category - Amount</h3>
       <canvas #categoryAmountChart></canvas>
     </div>
 
-    <div class="chart-card">
-      <h3>Category - Emissions</h3>
+    <div class="chart-card card">
+      <h3 class="text-heading">Category - Emissions</h3>
       <canvas #categoryEmissionChart></canvas>
     </div>
 
-    <div class="chart-card">
-      <h3>Top Subcategories - Amount</h3>
+    <div class="chart-card card">
+      <h3 class="text-heading">Top Subcategories - Amount</h3>
       <canvas #subcategoryAmountChart></canvas>
+    </div>
+
+    <div class="chart-card card">
+      <h3 class="text-heading">Totals: Budget vs Actual</h3>
+      <canvas #totalsChart></canvas>
+    </div>
+
+    <div class="chart-card card mt-2" style="flex-basis:100%">
+      <h3 class="text-heading">Budget Comparison by Category</h3>
+      <canvas #budgetComparisonChart></canvas>
+    </div>
+
+    <div class="chart-card card mt-2" style="flex-basis:100%">
+      <h3 class="text-heading">Delta by Category (actual - budget)</h3>
+      <canvas #deltaChart></canvas>
     </div>
   </section>
 
   <section class="tables">
-    <h3>Category Totals</h3>
+    <h3 class="text-heading mt-2">Category Totals</h3>
     <table class="table">
       <thead>
         <tr>
           <th>Category</th>
           <th>Amount</th>
-          <th
-            style="text-align: center; display: flex; justify-content: center; align-items: center"
-          >
-            <img
-              width="30"
-              height="30"
-              src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2.png"
-              alt="external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2"
-            />
-            Emission
-          </th>
+          <th style="text-align:center">Emission (kg)</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let c of categories">
           <td>{{ c.name }}</td>
           <td>${{ c.amount | number : '1.2-2' }}</td>
-          <td
-            style="text-align: center; display: flex; justify-content: center; align-items: center"
-          >
-            {{ c.emission }}
-          </td>
+          <td style="text-align:center">{{ c.emission | number : '1.2-2' }}</td>
         </tr>
       </tbody>
     </table>
 
-    <h3>Subcategories (top by amount)</h3>
+    <h3 class="text-heading mt-2">Subcategories (top by amount)</h3>
     <table class="table">
       <thead>
         <tr>
           <th>Category</th>
           <th>Subcategory</th>
           <th>Amount</th>
-          <th
-            style="text-align: center; display: flex; justify-content: center; align-items: center"
-          >
-            <img
-              width="30"
-              height="30"
-              src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2.png"
-              alt="external-emission-renewable-energy-flaticons-lineal-color-flat-icons-2"
-            />
-            Emission
-          </th>
+          <th style="text-align:center">Emission (kg)</th>
         </tr>
       </thead>
       <tbody>
@@ -89,10 +95,32 @@
           <td>{{ s.category }}</td>
           <td>{{ s.name }}</td>
           <td>${{ s.amount | number : '1.2-2' }}</td>
-          <td
-            style="text-align: center; display: flex; justify-content: center; align-items: center"
-          >
-            <span></span> <span>{{ s.emission }}</span>
+          <td style="text-align:center">{{ s.emission | number : '1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="text-heading mt-2">Budget Comparison (by category)</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Budgeted (kg)</th>
+          <th>Actual (kg)</th>
+          <th>Delta (kg)</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of budgetEntries">
+          <td>{{ cat.key }}</td>
+          <td>{{ cat.value.budgeted_kg | number:'1.2-2' }}</td>
+          <td>{{ cat.value.actual_kg | number:'1.2-2' }}</td>
+          <td>{{ cat.value.delta_kg | number:'1.2-2' }}</td>
+          <td>
+            <span *ngIf="cat.value.status === 'over'" style="color:#b82e2e">Over</span>
+            <span *ngIf="cat.value.status === 'under'" style="color:#109618">Under</span>
+            <span *ngIf="cat.value.status === 'on_target'">On target</span>
           </td>
         </tr>
       </tbody>

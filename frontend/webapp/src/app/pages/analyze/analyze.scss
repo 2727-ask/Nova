@@ -1,5 +1,53 @@
 // ...existing code...
 .analyze-root {
+    background: #121212;
+}
+
+h2 {
+    color: #7ed957;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+td {
+     color: #999;
+}
+
+thead {
+    background: linear-gradient(30deg, #ffffff0d 20%, #0000 50%) !important;
+}
+
+tr {
+    color:  #E0E0E0;
+    background: linear-gradient(30deg, #ffffff0d 20%, #0000 50%) !important;
+
+}
+
+
+
+.text-heading {
+    color: #90c17b;
+}
+
+table tr {
+    background: linear-gradient(30deg, #ffffff0d 20%, #0000 50%) !important;
+}
+
+.mt-2 {
+    margin-top: 16px;
+    margin-bottom: 6px;
+}
+
+.card {
+    z-index: 3;
+    border-radius: 20px;
+    background: linear-gradient(30deg, #ffffff0d 20%, #0000 50%) !important;
+}
+
+
+.analyze-root {
   padding: 16px;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
@@ -37,13 +85,9 @@
     margin-bottom: 16px;
 
     th, td {
-      border: 1px solid #e6e6e6;
+    //   border: 1px solid #E0E0E0;
       padding: 8px 10px;
       text-align: left;
-    }
-
-    thead {
-      background: #f7f7f7;
     }
   }
 }
