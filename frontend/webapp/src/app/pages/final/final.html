@@ -65,7 +65,7 @@
     <div class="right">
       <h3>Actionable tips (by category)</h3>
       <div class="cards">
-        <div class="cat-card" *ngFor="let c of categories">
+        <div class="cat-card" *ngFor="let c of categories" style="padding: 20px;">
           <div class="cat-header">
             <div class="cat-name">{{ c.name }}</div>
             <div class="impact">{{ c.emission | number:'1.0-2' }} kg → <strong>{{ c.afterEmission | number:'1.0-2' }} kg</strong></div>
