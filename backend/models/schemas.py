@@ -6,15 +6,15 @@ class UserProfile(BaseModel):
     gender: str
     age: int
     monthly_income: int
-    allocation: Dict[str, float]  # dollars per category
+    allocation: Dict[str, float]
 
 class Transaction(BaseModel):
-    date: str                    # e.g., "06/13"
+    date: str
     description: str
-    amount: float                # negative = expense, positive = deposit
+    amount: float
     balance: Optional[float] = None
 
 class SummaryResponse(BaseModel):
-    summary: Dict[str, Dict[str, float]]  # {Category: {Subcategory: total_spend}}
-    uncategorized: float                  # total spend that didn't match rules
+    summary: Dict[str, Dict[str, float]]
+    uncategorized: float
     transactions_count: int

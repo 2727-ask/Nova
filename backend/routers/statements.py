@@ -1,14 +1,11 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Query
-from fastapi.responses import StreamingResponse
+from sqlalchemy.orm import Session
+
+from db.database import SessionLocal
+from services.repository import bulk_insert_transactions
 from models.schemas import SummaryResponse
 from services.pdf_parser import parse_pdf, extract_transactions
 from services.categorizer import summarize_transactions, categorize_transactions
-from io import StringIO, BytesIO
-from sqlalchemy.orm import Session
-from db.database import SessionLocal
-from services.repository import bulk_insert_transactions
-
-import csv
 
 router = APIRouter()
 
@@ -68,5 +65,7 @@ async def save(
 
     return {
         "message": "Data saved successfully",
-        "inserted_rows": inserted
+        "seen_rows": len(rows_db),
+        "inserted_rows": inserted,
+        "duplicates_skipped": len(rows_db) - inserted
     }

@@ -1,7 +1,7 @@
-import re
+import re, pdfplumber
 from typing import List, Optional, Dict
 from io import BytesIO
-import pdfplumber
+
 from models.schemas import Transaction
 from utils.text import to_amount
 
@@ -36,8 +36,6 @@ def _parse_transaction_line(line: str) -> Optional[Transaction]:
         amount = to_amount(amount_token)
         balance = to_amount(balance_token)
     except ValueError:
-        # sometimes the last token may not be a pure balance; try alternative:
-        # If we can't parse, we skip the line.
         return None
 
     return Transaction(date=date, description=description, amount=amount, balance=balance)
@@ -55,7 +53,6 @@ def parse_pdf(pdf_bytes: bytes) -> List[Transaction]:
             text = page.extract_text() or ""
             if not text:
                 continue
-            # Only lines that look like transactions (start with MM/DD)
             for line in text.splitlines():
                 line = line.strip()
                 if not line or not DATE_RE.match(line):
@@ -63,21 +60,13 @@ def parse_pdf(pdf_bytes: bytes) -> List[Transaction]:
                 t = _parse_transaction_line(line)
                 if t:
                     txns.append(t)
-
-    # Deduplicate if needed (some PDFs repeat lines across "Page of" artifacts)
-    # Here we just return as-is.
     return txns
 
-
-# One money token: -1,700.41 or 7,065.43
 MONEY = r"-?\d{1,3}(?:,\d{3})*(?:\.\d{2})"
-# Full transaction line:
-#  06/16 <desc...> -242.96 6,855.70
 LINE_RE = re.compile(
     rf"^(?P<date>\d{{2}}/\d{{2}})\s+(?P<desc>.*?)\s+(?P<amount>{MONEY})\s+(?P<balance>{MONEY})$"
 )
 
-# Lines that we should ignore even if they slip through
 IGNORE_SUBSTRINGS = (
     "Deposits and Additions",
     "ATM & Debit Card Withdrawals",
@@ -97,7 +86,6 @@ IGNORE_SUBSTRINGS = (
 def _looks_like_noise(line: str) -> bool:
     if not line:
         return True
-    # obvious headers (e.g., "June 13, 2025 through July 14, 2025")
     if line[0].isalpha():
         return True
     for s in IGNORE_SUBSTRINGS:
@@ -106,7 +94,6 @@ def _looks_like_noise(line: str) -> bool:
     return False
 
 def _clean_spaces(s: str) -> str:
-    # collapse internal whitespace
     return " ".join(s.split())
 
 def extract_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
@@ -119,23 +106,18 @@ def extract_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
     res: List[Dict[str, str]] = []
     with pdfplumber.open(BytesIO(pdf_bytes)) as pdf:
         for page in pdf.pages:
-            # Slightly tighter tolerances can keep columns aligned in some PDFs
             text = page.extract_text(x_tolerance=2, y_tolerance=3) or ""
             for raw in text.splitlines():
                 line = _clean_spaces(raw.strip())
                 if not line or _looks_like_noise(line):
                     continue
 
-                # The exact match: MM/DD ... AMOUNT BALANCE
                 m = LINE_RE.match(line)
                 if not m:
-                    # Sometimes the balance token is glued; try to salvage by splitting at the end.
-                    # As a fallback, try to find the LAST TWO money tokens, treat them as amount/balance.
                     money_tokens = re.findall(MONEY, line)
                     if len(money_tokens) >= 2 and re.match(r"^\d{2}/\d{2}\b", line):
                         date = line.split()[0]
                         amount_str, balance_str = money_tokens[-2], money_tokens[-1]
-                        # description is what's between date and amount_str (first index of amount_str)
                         try:
                             idx_amt = line.rfind(amount_str)
                             desc = line[len(date):idx_amt].strip()
@@ -149,7 +131,6 @@ def extract_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
                     amount_str = m.group("amount")
                     balance_str = m.group("balance")
 
-                # Normalize numbers
                 def to_float(x: str) -> float:
                     return float(x.replace(",", ""))
 
@@ -159,8 +140,6 @@ def extract_transactions(pdf_bytes: bytes) -> List[Dict[str, str]]:
                 except ValueError:
                     continue
 
-                # Skip pure deposits in CSV if you only want spend — or keep them; your call.
-                # Here we keep all transactions; CSV consumer can filter later.
                 res.append({
                     "date": date,
                     "description": desc,

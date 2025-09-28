@@ -3,8 +3,6 @@ from typing import Dict, Tuple, List
 from models.schemas import Transaction
 
 # ---- Categories & Subcategories ----
-# You can keep expanding the keyword map over time.
-# Order matters: first match wins.
 RULES: List[Tuple[re.Pattern, str, str]] = [
     # ========== TRAVEL ==========
     # Public transport

@@ -1,4 +1,4 @@
-from typing import Iterable, Dict, List
+from typing import Iterable, Dict
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
@@ -11,7 +11,6 @@ def bulk_insert_transactions(db: Session, rows: Iterable[Dict]) -> int:
     if not rows:
         return 0
 
-    # Ensure keys exist (you can normalize here if needed)
     for r in rows:
         r.setdefault("balance", None)
         r.setdefault("source", "chase_pdf")
@@ -22,6 +21,6 @@ def bulk_insert_transactions(db: Session, rows: Iterable[Dict]) -> int:
         VALUES
           (:date, :description, :amount, :balance, :category, :subcategory, :source)
     """)
-    res = db.execute(sql, rows)   # executes in batch
+    res = db.execute(sql, rows)
     db.commit()
-    return res.rowcount  # inserted count (duplicates ignored)
+    return res.rowcount
